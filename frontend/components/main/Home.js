@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import {View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions, SafeAreaView, StatusBar} from 'react-native'
+import React, { Component,useState,useEffect } from 'react'
+import {View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions, SafeAreaView, StatusBar, Image} from 'react-native'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -25,6 +25,21 @@ const EmptyScreen = () =>{
 const TopTab = createMaterialTopTabNavigator();
 
 const Flex = ({navigation}) => {
+  const [image, setImage] = useState("https://bit.ly/fcc-running-cats")
+  useEffect(()=> {
+    //console.log({currentUser,posts})
+      firebase.firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          if(snapshot.data().downloadURL!=null){
+            setImage(snapshot.data().downloadURL)
+          }
+          
+      }
+      })},[])
     return (
       <SafeAreaView style = {styles.testContainer}>
         <View style={{flexDirection: 'row', height: Dimensions.get("window").height, justifyContent:'space-around'}}>
@@ -33,6 +48,9 @@ const Flex = ({navigation}) => {
                 <View style = {{flex:2, backgroundColor: 'grey'}}>
                   <TouchableOpacity component = {ProfileScreen} onPress= {()=>navigation.navigate("Profile",{uid: firebase.auth().currentUser.uid})}
                   style = {{borderRadius: 100, backgroundColor:'red', width:50, height:50, alignSelf: 'center'}}>
+                    <Image source={{uri: image}} style={{flex:1, aspectRatio: 1/1, borderRadius:50}}>
+
+                    </Image>
                   </TouchableOpacity>
                 </View>
                 <View style={{flex: 18, backgroundColor: 'grey'}} />
